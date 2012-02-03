@@ -153,6 +153,14 @@ typedef struct eap_packet_raw {
 	uint8_t		data[1];
 } eap_packet_raw_t;
 
+/*
+ * Structure to represent eap channel binding packet format *on wire*
+ */
+typedef struct eap_chbind_packet_t {
+	uint8_t		code;
+	uint8_t		data[1];
+} eap_chbind_packet_t;
+
 
 /*
  * interfaces in eapcommon.c
@@ -165,5 +173,7 @@ extern VALUE_PAIR *eap_packet2vp(RADIUS_PACKET *packet, eap_packet_raw_t const *
 extern eap_packet_raw_t *eap_vp2packet(TALLOC_CTX *ctx, VALUE_PAIR *vps);
 void eap_add_reply(REQUEST *request,
 		   char const *name, uint8_t const *value, int len);
+extern VALUE_PAIR *eap_chbind_packet2vp(const eap_chbind_packet_t *packet, size_t len);
+extern size_t eap_chbind_vp2packet(VALUE_PAIR *vps, eap_chbind_packet_t **packet);
 
 #endif /* _EAP_TYPES_H */
