@@ -152,6 +152,7 @@ REALM *realm_find(char const *name); /* name is from a packet */
 REALM *realm_find2(char const *name); /* ... with name taken from realm_find */
   int realms_home_server_add(home_server *home, CONF_SECTION *cs, int dual);
   int realms_pool_add(home_pool_t *pool, CONF_SECTION *cs);
+  int realms_realm_add( REALM *r, CONF_SECTION *cs);
 
 
 void home_server_update_request(home_server *home, REQUEST *request);
