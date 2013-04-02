@@ -40,6 +40,7 @@ USES_APPLE_DEPRECATED_API	/* OpenSSL API has been deprecated by Apple */
 #ifdef HAVE_UTIME_H
 #include <utime.h>
 #endif
+#include <ctype.h>
 
 #ifdef WITH_TLS
 #ifdef HAVE_OPENSSL_RAND_H
@@ -61,7 +62,7 @@ static unsigned int 	record_minus(record_t *buf, void *ptr,
 				     unsigned int size);
 
 #ifdef PSK_MAX_IDENTITY_LEN
-int identity_is_safe( const char *identity)
+static int identity_is_safe( const char *identity)
 {
 	while (identity &&identity[0]) {
 		char c = identity[0];
@@ -94,23 +95,22 @@ static unsigned int psk_server_callback(SSL *ssl, const char *identity,
 					     FR_TLS_EX_INDEX_REQUEST);
 	if (request) {
 		VALUE_PAIR *vp;
-		vp = rad_pairmake(request, &request->config_items,
+		vp = radius_pairmake(request, &request->config_items,
 				  "tls-psk-identity",
 				  identity, T_OP_SET);
 		if (vp) {
 			if (identity_is_safe(identity))
-				psk_len = radius_xlat(psk, max_psk_len,
-						      "%{psksql:select key from psk_keys where keyid = '%{control:tls-psk-identity}';}",
-						      NULL, NULL);
-			if (psk_len > 0)
-				return psk_len;
+			  psk_len = radius_xlat((char *) psk, max_psk_len,
+						"%{psksql:select key from psk_keys where keyid = '%{control:tls-psk-identity}';}",
+						request, NULL, NULL);
+			if (psk_len > 0) return psk_len;
+		}
 	}
-	
-		if ((strcmp(identity, conf->psk_identity) != )) {
+		if (strcmp(identity, conf->psk_identity) != 0) {
 		return 0;
 	}
 
-	psk_len = strlen(conf->psk_password);
+		psk_len = strlen(conf->psk_password);
 	if (psk_len > (2 * max_psk_len)) return 0;
 
 	return fr_hex2bin(conf->psk_password, psk, psk_len);
