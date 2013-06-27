@@ -99,15 +99,15 @@ static unsigned int psk_server_callback(SSL *ssl, const char *identity,
 		 size_t hex_len = 0;
 		if (max_psk_len > PSK_MAX_PSK_LEN)
 		  max_psk_len = PSK_MAX_PSK_LEN;
-		vp = radius_pairmake(request, &request->config_items,
+		vp = pairmake(request, &request->config_items,
 				  "tls-psk-identity",
 				  identity, T_OP_SET);
 		if (vp) {
 			if (identity_is_safe(identity))
 			  hex_len = radius_xlat((char *) psk_buffer,
 						2*max_psk_len+1,
-						"%{psksql:select hex(key) from psk_keys where keyid = '%{control:tls-psk-identity}';}",
-						request, NULL, NULL);
+						request, "%{psksql:select hex(key) from psk_keys where keyid = '%{control:tls-psk-identity}';}",
+						NULL, NULL);
 			if (hex_len >0)
 			  return fr_hex2bin(psk_buffer, psk, hex_len);
 		}
