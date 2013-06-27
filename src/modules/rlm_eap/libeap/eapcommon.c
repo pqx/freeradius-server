@@ -60,6 +60,7 @@
 RCSID("$Id$")
 
 #include <freeradius-devel/libradius.h>
+#include <freeradius-devel/rad_assert.h>
 #include "eap_types.h"
 
 const FR_NAME_NUMBER eap_rcode_table[] = {
@@ -397,11 +398,13 @@ void eap_add_reply(REQUEST *request,
 	pairmemcpy(vp, value, len);
 }
 
-VALUE_PAIR *eap_chbind_packet2vp(const eap_chbind_packet_t *packet, size_t len)
+VALUE_PAIR *eap_chbind_packet2vp(REQUEST *request, const eap_chbind_packet_t *packet, size_t len)
 {
 	size_t		size;
 	const uint8_t	*ptr;
 	VALUE_PAIR	*head = NULL;
+	uint8_t *octets = NULL;
+	
 	VALUE_PAIR	**tail = &head;
 	VALUE_PAIR	*vp;
 
@@ -411,12 +414,15 @@ VALUE_PAIR *eap_chbind_packet2vp(const eap_chbind_packet_t *packet, size_t len)
 		size = len;
 		if (size > 247) size = 247;
 
-		vp = paircreate(PW_UKERNA_CHBIND, VENDORPEC_UKERNA);
+		vp = paircreate(request, PW_UKERNA_CHBIND, VENDORPEC_UKERNA);
 		if (!vp) {
 			pairfree(&head);
 			return NULL;
 		}
-		memcpy(vp->vp_octets, ptr, size);
+		octets = talloc_array(vp, uint8_t, size);
+		rad_assert(octets);
+		memcpy(octets, ptr, size);
+		vp->vp_octets = octets;
 		vp->length = size;
 
 		*tail = vp;
@@ -475,3 +481,4 @@ size_t eap_chbind_vp2packet(VALUE_PAIR *vps, eap_chbind_packet_t **result)
 
 	*result = eap_chbind_packet;
 	return len;
+}

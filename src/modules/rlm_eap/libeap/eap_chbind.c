@@ -34,7 +34,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <freeradius-devel/ident.h>
+
 RCSID("$Id$")
 
 #include "eap_chbind.h"
@@ -84,16 +84,17 @@ int chbind_process(REQUEST *req, CHBIND_REQ *chbind_req)
   /* Set-up the fake request */
   fake = request_alloc_fake(req);
   rad_assert(fake->packet->vps == NULL);
-  vp = pairmake("Freeradius-Proxied-To", "127.0.0.1", T_OP_EQ);
-  if (vp) {
-    pairadd(&fake->packet->vps, vp);
-  }
+  pairmake(fake, &fake->packet->vps, "Freeradius-Proxied-To", "127.0.0.1", T_OP_EQ);
   
   /* Add the username to the fake request */
   if (chbind_req->username) {
-    vp = paircreate(PW_USER_NAME, 0);
+    uint8_t *octets = NULL;
+    vp = paircreate(fake, PW_USER_NAME, 0);
     rad_assert(vp);
-    memcpy(vp->vp_octets, chbind_req->username, chbind_req->username_len);
+    octets = talloc_array(vp, uint8_t, chbind_req->username_len+1);
+    rad_assert(octets);
+    memcpy(octets, chbind_req->username, chbind_req->username_len);
+    vp->vp_octets = octets;
     vp->length = chbind_req->username_len;
 
     pairadd(&fake->packet->vps, vp);

@@ -37,7 +37,6 @@
 #ifndef _EAP_CHBIND_H
 #define _EAP_CHBIND_H
 
-#include <freeradius-devel/ident.h>
 RCSIDH(eap_chbind_h, "$Id$")
 
 #include <stdio.h>

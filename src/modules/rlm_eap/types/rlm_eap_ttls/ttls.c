@@ -700,15 +700,17 @@ static int process_reply(UNUSED eap_handler_t *handler, tls_session_t *tls_sessi
 		}
 
 		/* move channel binding responses; we need to send them */
-		pairmove2(&vp, &reply->vps, PW_UKERNA_CHBIND, VENDORPEC_UKERNA, TAG_ANY);
+		pairfilter(tls_session, &vp, &reply->vps, PW_UKERNA_CHBIND, VENDORPEC_UKERNA, TAG_ANY);
 		if (pairfind(vp, PW_UKERNA_CHBIND, VENDORPEC_UKERNA, TAG_ANY) != NULL) {
-			t->authenticated = TRUE;
+			t->authenticated = true;
 			/*
 			 *	Use the tunneled reply, but not now.
 			 */
 			if (t->use_tunneled_reply) {
-				t->accept_vps = reply->vps;
-				reply->vps = NULL;
+				rad_assert(!t->accept_vps);
+				pairfilter(t, &t->accept_vps, &reply->vps,
+					  0, 0, TAG_ANY);
+				rad_assert(!reply->vps);
 			}
 			rcode = RLM_MODULE_HANDLED;
 		}
@@ -783,7 +785,7 @@ static int process_reply(UNUSED eap_handler_t *handler, tls_session_t *tls_sessi
 		pairfilter(t, &vp, &reply->vps, PW_REPLY_MESSAGE, 0, TAG_ANY);
 
 		/* also move chbind messages, if any */
-		pairmove2(&vp, &reply->vps, PW_UKERNA_CHBIND, VENDORPEC_UKERNA,
+		pairfilter(t, &vp, &reply->vps, PW_UKERNA_CHBIND, VENDORPEC_UKERNA,
 			  TAG_ANY);
 
 		/*
@@ -1228,7 +1230,7 @@ int eapttls_process(eap_handler_t *handler, tls_session_t *tls_session)
 		if (req->chbind_resp_len > 0) {
 			RDEBUG("sending chbind response");
 			pairadd(&fake->reply->vps,
-				 eap_chbind_packet2vp((eap_chbind_packet_t *)req->chbind_resp,
+				eap_chbind_packet2vp(fake, (eap_chbind_packet_t *)req->chbind_resp,
 						      req->chbind_resp_len));
 		} else {
 			RDEBUG("no chbind response");
