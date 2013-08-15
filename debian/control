@@ -9,7 +9,6 @@ Build-Depends: debhelper (>= 6.0.7),
  libldap2-dev,
  libsasl2-dev,
  libiodbc2-dev,
- libtalloc-dev,
  libkrb5-dev,
  moonshot-trust-router-dev,
  libperl-dev,
@@ -21,7 +20,8 @@ Build-Depends: debhelper (>= 6.0.7),
  libssl-dev,
  libtalloc-dev,
  libyubikey-dev,
- libsqlite3-dev
+ libsqlite3-dev,
+  openssl, libpcre3-dev
 Section: net
 Priority: optional
 Maintainer: Josip Rodin <joy-packages@debian.org>
