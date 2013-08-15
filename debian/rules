@@ -66,7 +66,6 @@ else
 endif
 	ln -s /usr/share/misc/config.sub config.sub
 	ln -s /usr/share/misc/config.guess config.guess
-	
 
 	./configure $(confflags) \
 		--config-cache \
@@ -107,7 +106,7 @@ clean: unpatch
 	rm -f build-arch-stamp build-indep-stamp 
 	rm -f config.cache config.log
 	rm -f src/freeradius-devel
-	
+
 	[ ! -d src/modules/lib ] || rm -fr src/modules/lib || true
 	[ ! -d src/binary ] || rm -fr src/binary || true
 
@@ -134,7 +133,8 @@ install-arch: build-arch-stamp
 	test -d $(freeradius_dir)/usr/lib/freeradius || mkdir -p $(freeradius_dir)/usr/lib/freeradius
 	ln -fs rlm_sql.so $(freeradius_dir)/usr/lib/freeradius/librlm_sql.so
 	$(MAKE) install R=$(freeradius_dir)
-	
+	(cd debian/tmp/etc/freeradius/certs&& $(MAKE) destroycerts)	
+
 	# rename radius binary to play nicely with others
 	mv $(freeradius_dir)/usr/sbin/radiusd $(freeradius_dir)/usr/sbin/$(package)
 	mv $(freeradius_dir)/$(mandir)/man8/radiusd.8 $(freeradius_dir)/$(mandir)/man8/$(package).8
