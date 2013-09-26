@@ -236,7 +236,9 @@ uint8_t *chbind_build_response(REQUEST *req, size_t *resp_len)
   resp[2] = (uint8_t)(len & 0x00FF);
   
   /* Output the length of the entire response (attrs + header) */
-  *resp_len = len + 4;
-
+  /* If there are no attributes, only send the code*/
+  if (req->reply->vps)
+    *resp_len = len + 4;
+  else *resp_len = 1;
   return resp;
 }
