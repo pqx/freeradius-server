@@ -153,6 +153,7 @@ static void tr_response_func( TIDC_INSTANCE *inst,
 	/* TBD -- update name to be unique per server */
 	hs-> name = strdup("blah");
 	  hs->hostname =strdup("blah");
+        hs->src_ipaddr.af = home_server_ip.af;
 	  hs->port = 2083;
 	hs->proto = IPPROTO_TCP;
 	hs->secret = strdup("radsec");
