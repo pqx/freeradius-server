@@ -43,18 +43,6 @@ static long ssl_built = OPENSSL_VERSION_NUMBER;
  */
 int ssl_check_version(void)
 {
-	long ssl_linked;
-	
-	ssl_linked = SSLeay();
-	
-	if (ssl_linked != ssl_built) {
-		ERROR("libssl version mismatch."
-		       "  Built with: %lx\n  Linked: %lx",
-		       (unsigned long) ssl_built,
-		       (unsigned long) ssl_linked);
-	
-		return -1;
-	};
 	
 	return 0;
 }
