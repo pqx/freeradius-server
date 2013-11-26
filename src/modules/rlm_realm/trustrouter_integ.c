@@ -29,9 +29,10 @@ int tr_init(void)
 }
 
 static fr_tls_server_conf_t *construct_tls( TIDC_INSTANCE *inst,
+					    home_server *hs,
 					    TID_SRVR_BLK *server)
 {
-  fr_tls_server_conf_t *tls = rad_malloc(sizeof(*tls));
+  fr_tls_server_conf_t *tls = talloc_zero( hs, fr_tls_server_conf_t);
   unsigned char *key_buf = NULL;
   ssize_t keylen;
   char *hexbuf = NULL;
@@ -39,7 +40,6 @@ static fr_tls_server_conf_t *construct_tls( TIDC_INSTANCE *inst,
 
   if (tls == NULL)
     goto error;
-  memset(tls, 0, sizeof(*tls));
   keylen = tr_compute_dh_key(&key_buf, server->aaa_server_dh->pub_key,
 			     inst->client_dh);
   if (keylen <= 0) {
@@ -78,7 +78,7 @@ static fr_tls_server_conf_t *construct_tls( TIDC_INSTANCE *inst,
       free(hexbuf);
     }
     if (tls)
-      free(tls);
+      talloc_free(tls);
     return NULL;
 }
   
@@ -145,7 +145,7 @@ static void tr_response_func( TIDC_INSTANCE *inst,
       if (hs) {
 	DEBUG2("Found existing home_server %s", hs->name);
       } else {
-	hs = rad_malloc(sizeof(*hs));
+	hs = talloc_zero(NULL, home_server);
 	if (!hs) return;
 	memset(hs, 0, sizeof(*hs));
 	hs->type = HOME_TYPE_AUTH;
@@ -156,7 +156,7 @@ static void tr_response_func( TIDC_INSTANCE *inst,
 	  hs->port = 2083;
 	hs->proto = IPPROTO_TCP;
 	hs->secret = strdup("radsec");
-	hs->tls = construct_tls(inst, server);
+	hs->tls = construct_tls(inst, hs, server);
 	if (hs->tls == NULL) goto error;
 	if (!realms_home_server_add(hs, NULL, 0))
 	  goto error;
