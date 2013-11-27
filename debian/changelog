@@ -1,8 +1,8 @@
 freeradius (3.0.0~rc0+git+moonshot1-5) unstable; urgency=low
 
   * Don't fail on duplicate IP
-	* realms.c: don't segfault on trustrouter result
-	  * version.c: remove ssl version check
+  * realms.c: don't segfault on trustrouter result
+  * version.c: remove ssl version check
 
  -- Sam Hartman <hartmans@debian.org>  Tue, 26 Nov 2013 09:39:08 -0500
 
