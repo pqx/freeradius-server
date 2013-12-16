@@ -145,15 +145,16 @@ static void tr_response_func( TIDC_INSTANCE *inst,
       if (hs) {
 	DEBUG2("Found existing home_server %s", hs->name);
       } else {
+	char nametemp[INET_ADDRSTRLEN];
+	inet_ntop(home_server_ip.af, &home_server_ip.ipaddr, nametemp, sizeof(nametemp));
 	hs = talloc_zero(NULL, home_server);
 	if (!hs) return;
 	memset(hs, 0, sizeof(*hs));
 	hs->type = HOME_TYPE_AUTH;
 	hs->ipaddr = home_server_ip;
-	/* TBD -- update name to be unique per server */
-	hs-> name = strdup("blah");
-	  hs->hostname =strdup("blah");
         hs->src_ipaddr.af = home_server_ip.af;
+	hs->name = strdup(nametemp);
+	hs->hostname = strdup(nametemp);
 	  hs->port = 2083;
 	hs->proto = IPPROTO_TCP;
 	hs->secret = strdup("radsec");
