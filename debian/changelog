@@ -1,3 +1,9 @@
+freeradius (3.0.0~rc0+git+moonshot1-6) unstable; urgency=low
+
+  * Update for allowing an RP to contact multiple IDPs
+
+ -- Sam Hartman <hartmans@debian.org>  Mon, 16 Dec 2013 10:40:09 -0500
+
 freeradius (3.0.0~rc0+git+moonshot1-5) unstable; urgency=low
 
   * Don't fail on duplicate IP
