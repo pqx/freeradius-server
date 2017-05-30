@@ -61,6 +61,7 @@ config.sub
 config.h
 src/main/radattr
 src/modules/lib/
+src/modules/rlm_eap/types/rlm_eap_fast/all.mk
 warnings.txt
 
 # Analyzer output
