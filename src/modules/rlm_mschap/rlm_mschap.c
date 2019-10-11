@@ -651,8 +651,8 @@ static int mod_instantiate(CONF_SECTION *conf, void *instance)
 			      inst->ntlm_auth_timeout);
 		return -1;
 	}
-	if (inst->ntlm_auth_timeout > 10) {
-		cf_log_err_cs(conf, "ntlm_auth_timeout '%d' is too large (maximum: 10)",
+	if (inst->ntlm_auth_timeout > 50) {
+		cf_log_err_cs(conf, "ntlm_auth_timeout '%d' is too large (maximum: 50)",
 			      inst->ntlm_auth_timeout);
 		return -1;
 	}

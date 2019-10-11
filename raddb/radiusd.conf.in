@@ -221,7 +221,7 @@ correct_escapes = true
 #
 #  Useful range of values: 5 to 120
 #
-max_request_time = 30
+max_request_time = 60
 
 #  cleanup_delay: The time to wait (in seconds) before cleaning up
 #  a reply which was sent to the NAS.
