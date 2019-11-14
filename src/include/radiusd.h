@@ -316,13 +316,13 @@ struct rad_request {
 #define RAD_REQUEST_OPTION_CTX	(1 << 1)
 
 #define SECONDS_PER_DAY		86400
-#define MAX_REQUEST_TIME	30
+#define MAX_REQUEST_TIME	60
 #define CLEANUP_DELAY		5
 #define MAX_REQUESTS		256
 #define RETRY_DELAY		5
 #define RETRY_COUNT		3
 #define DEAD_TIME		120
-#define EXEC_TIMEOUT		10
+#define EXEC_TIMEOUT		40
 
 /* for paircompare_register */
 typedef int (*RAD_COMPARE_FUNC)(void *instance, REQUEST *,VALUE_PAIR *, VALUE_PAIR *, VALUE_PAIR *, VALUE_PAIR **);

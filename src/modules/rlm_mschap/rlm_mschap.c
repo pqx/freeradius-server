@@ -644,7 +644,7 @@ static int mod_instantiate(CONF_SECTION *conf, void *instance)
 	 *	Check ntlm_auth_timeout is sane
 	 */
 	if (!inst->ntlm_auth_timeout) {
-		inst->ntlm_auth_timeout = EXEC_TIMEOUT;
+		inst->ntlm_auth_timeout = 10;
 	}
 	if (inst->ntlm_auth_timeout < 1) {
 		cf_log_err_cs(conf, "ntml_auth_timeout '%d' is too small (minimum: 1)",
